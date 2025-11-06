@@ -13,6 +13,10 @@ class CategoriaViwSet(viewsets.ModelViewSet):
     serializer_class = CategoriaSerializer
     permission_classes = [IsAdminUser]
 
+    def perform_destroy(self, instance): #en lugar de eliminar se marca como inactivo
+        instance.activo = False
+        instance.save()
+
 class ProductoViewSet(viewsets.ModelViewSet):
     queryset = Producto.objects.all()
     serializer_class= ProductoSerializer
