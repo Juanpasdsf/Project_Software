@@ -30,7 +30,17 @@ class Carrito(models.Model):
     activo = models.BooleanField(default=True)
     def __str__(self):
         return f"Carrito de {self.user.username} - {self.fecha:%Y-%m-%d %H:%M}"
+    def calcular_total(self):
+        items = self.carritoproducto_set.all()
+        total = sum(item.producto.precio * item.cantidad for item in items)
+        return total
+    
+    @property
+    def total(self):
+        return self.calcular_total()
 
+    def __str__(self):
+        return f"Carrito de {self.user.username} - ${self.total}"
 
 class CarritoProducto(models.Model):
     carrito = models.ForeignKey(Carrito,on_delete=models.CASCADE, related_name='items')
