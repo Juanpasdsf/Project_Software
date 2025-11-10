@@ -111,3 +111,18 @@ class ModelTests(TestCase):
 
 
 # Create your tests here.
+
+# Ejecutar todas las pruebas
+python manage.py test
+
+# Ejecutar pruebas específicas
+python manage.py test ferreteria.tests.ModelTests
+python manage.py test ferreteria.tests.APITests
+python manage.py test ferreteria.tests.IntegrationTests
+
+# Ejecutar con verbosidad aumentada
+python manage.py test -v 2
+
+# Ejecutar pruebas y generar reporte de cobertura
+coverage run manage.py test
+coverage report
