@@ -9,6 +9,7 @@ import tempfile
 from django.core.files.uploadedfile import SimpleUploadedFile
 import json
 
+# Create your tests here.
 #pruebas para los modelos
 class ModelTests(TestCase):
     def setUp(self): #configuracion inicial para todas las pruebas
@@ -108,9 +109,45 @@ class ModelTests(TestCase):
                 categoria=self.categoria
             )
 
+#pruebas para los serializadores
+class SerializerTests(TestCase):
+    def setUp(self):
+        self.categoria = Categoria.objects.create(
+            nombre='Electricidad',
+            descripcion='Productos eléctricos'
+        )
+        
+        self.producto_data = {
+            'nombre': 'Cable Eléctrico',
+            'descripcion': 'Cable de cobre 2.5mm',
+            'precio': 45.00,
+            'stock': 20,
+            'categoria': self.categoria.id
+        }
+    def test_categoria_serializer(self): #se hace las pruebas del serializador de categorias
+        serializer = CategoriaSerializer(instance=self.categoria)
+        data = serializer.data
+        
+        self.assertEqual(data['nombre'], 'Electricidad')
+        self.assertEqual(data['descripcion'], 'Productos eléctricos')
+        self.assertTrue(data['activo'])
+
+    def test_producto_serializer_valid_data(self):#prueba el serializador de productos con datos validos
+        serializer = ProductoSerializer(data=self.producto_data)
+        self.assertTrue(serializer.is_valid())
+
+    def test_producto_serializer_invalid_data(self):#se prueba el serializador con datos invalidos
+        invalid_data = self.producto_data.copy()
+        invalid_data['precio'] = -10.00  # Precio negativo
+        
+        serializer = ProductoSerializer(data=invalid_data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('precio', serializer.errors)
+            
 
 
-# Create your tests here.
+
+# fin de las pruebas.
 
 # Ejecutar todas las pruebas
 python manage.py test
